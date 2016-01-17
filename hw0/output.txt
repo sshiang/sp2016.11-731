@@ -1,0 +1,7 @@
+-
+name:
+   first: Sz-Rung
+   last: Shiang
+email: sshiang@andrew.cmu.edu
+leaderboard: sshiang
+languages: [eng,cmn,jpn]

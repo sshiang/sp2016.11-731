@@ -1,6 +1,9 @@
 Team Name: TAIWAN NO. 1 
 Team Member: sshiang, Fred, Bernie
 
+Please download file first: https://drive.google.com/file/d/0B5yCs07HNjFyeVpjVkFJRGZEbDg/view?usp=sharing(file too large to upload to github)
+
+
 A. Result: (Dev set)
 1. Best system(Lower case, stemming, exact-match, HMM, symmetry classifier)
     Precision: 0.762712

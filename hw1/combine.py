@@ -237,7 +237,7 @@ clf.fit(example_oracle, label_oracle)
 
 print "complete model..."
 
-f = open("result.txt","w")
+f = open("output.txt","w")
 for i in range(300):
 	print i
 	inter, nointer = intersect(forward[i],backward[i])

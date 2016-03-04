@@ -184,10 +184,6 @@ def dumpFile(splitNum,toSplit,f):
 
 #f = open("data/tree_german_processed","w")
 count = 0
-
-start = int(sys.argv[1])
-end = int(sys.argv[2])
-
 #textFile = sys.argv[1]
 
 textFile = "data/train-test.hyp1-hyp2-ref"
@@ -212,6 +208,14 @@ fx = open(out2File, "w")
 
 
 lines = [line.strip() for line in open(textFile)]
+
+
+if len(sys.argv)==1:
+	start = 0
+	end = len(lines)
+else:
+	start = int(sys.argv[1])
+	end = int(sys.argv[2])
 
 
 #for line in open(textFile):

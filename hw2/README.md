@@ -9,6 +9,9 @@ Fred
 glove vectors
 Bernie:
 python metoer6.py > output.txt
+sshiang:
+python parser.py
+
 
 C. Preprocsssing
 1. lower case

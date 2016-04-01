@@ -1,0 +1,226 @@
+#!/usr/bin/env python
+import argparse
+import sys
+import models
+import heapq
+from collections import namedtuple
+import math
+from operator import attrgetter
+import copy
+from operator import itemgetter
+# for the future
+
+def reorder(h):
+	paths = [([],0)]
+	stack_size = 100	
+	for i in range(len(h.translated)):
+		new_paths = []
+		for path in paths:
+			for j in range(len(path[0])+1):
+				#print '1: ', path[0][:j], '2: ', h.translated[i], '3: ', path[0][j:]
+				toTranslate = path[0][:j] + h.translated[i] + path[0][j:]
+
+				lm_state = lm.begin()
+				temp = [x for y in toTranslate for x in y]
+				logprob = 0
+				for word in temp:
+					(lm_state, word_logprob) = lm.score(lm_state, word)
+					logprob += word_logprob
+									
+				logprob += lm.end(lm_state) #if j == len(f) else 0.0	
+
+				
+				new_paths.append((toTranslate,logprob))	
+		# prune
+		paths = sorted(new_paths, key=lambda x: x[1], reverse=True)
+
+
+	final = sorted(new_path, key=lambda x: x[1], reverse=True)[0]
+	return final
+
+def distance(pos1, pos2):
+	return -0.1*math.fabs(pos2-pos1)
+
+def getElement(elements, h, length):
+	if h.predecessor != None:
+		elements.append((h.phrase.english.split(),length))
+		return getElement(elements, h.predecessor, length-1)
+	return elements
+
+
+def reordering(candidate):
+	# start with <s>	
+	length = 0
+	h = candidate
+	while h.predecessor != None:
+		h = h.predecessor
+		length +=1 
+
+	elements = []
+	elements = getElement(elements, candidate, length) + [(["</s>"],length+1)] + [(["<s>"],0)]
+	# beam search 
+	beam_size = 100
+	paths = [([["<s>"]],0)]
+	toBreak = False
+	position = 0
+
+	while True:
+		position += 1
+		new_paths = []
+		for path in paths:
+			choice = copy.deepcopy(elements)
+			for x in path[0]:
+				for y in range(len(choice)):
+					if choice[y][0] == x:
+						del choice[y]
+						break
+
+			for cho in choice:
+				if len(choice)!=1 and cho[0]==["</s>"]:
+					continue
+				score = path[1]
+				score += (lm.single_score((path[0][-1][-1],cho[0][0]))+distance(position,cho[1]))
+				new_paths.append((path[0]+[cho[0]],score))
+
+		if len(new_paths)==0:
+			# get path
+			new_paths = copy.deepcopy(paths)
+			break
+		if len(new_paths)>beam_size:
+			sorting = sorted(new_paths,key=itemgetter(1),reverse=True)
+			paths = copy.deepcopy(sorting[:beam_size])
+		else:
+			paths = copy.deepcopy(new_paths)
+	max_phrase = max(paths,key=itemgetter(1))
+	sent = ""
+	for phrase in max_phrase[0][1:-1]:
+		for word in phrase:
+			sent += "%s "%(word)
+	print sent
+
+parser = argparse.ArgumentParser(description='Simple phrase based decoder.')
+parser.add_argument('-i', '--input', dest='input', default='data/input', help='File containing sentences to translate (default=data/input)')
+parser.add_argument('-t', '--translation-model', dest='tm', default='data/tm', help='File containing translation model (default=data/tm)')
+parser.add_argument('-s', '--stack-size', dest='s', default=1, type=int, help='Maximum stack size (default=1)')
+parser.add_argument('-n', '--num_sentences', dest='num_sents', default=sys.maxint, type=int, help='Number of sentences to decode (default=no limit)')
+parser.add_argument('-l', '--language-model', dest='lm', default='data/lm', help='File containing ARPA-format language model (default=data/lm)')
+parser.add_argument('-v', '--verbose', dest='verbose', action='store_true', default=False,  help='Verbose mode (default=off)')
+opts = parser.parse_args()
+
+tm = models.TM(opts.tm, sys.maxint)
+lm = models.LM(opts.lm)
+sys.stderr.write('Decoding %s...\n' % (opts.input,))
+input_sents = [tuple(line.strip().split()) for line in open(opts.input).readlines()[:opts.num_sents]]
+
+hypothesis = namedtuple('hypothesis', 'logprob, translated_logprob, lm_state, predecessor, phrase, translated')
+for f in input_sents:
+	initial_hypothesis = hypothesis(0.0, 0.0, lm.begin(), None, None, [])
+
+	#########################################################################################
+
+	# start from backward
+	stacks_back = [{} for _ in f] + [{}]
+	stacks_back[-1][""] = initial_hypothesis
+	for ix, stack in enumerate(stacks_back[1:][::-1]):
+		# extend the top s hypotheses in the current stack
+		#print "i", i
+		i = len(stacks_back)-ix-1
+		#print "i", i
+		for h in heapq.nlargest(opts.s, stack.itervalues(), key=lambda h: h.logprob): # prune
+			#for j in xrange(i+1,len(f)+1):
+			for j in xrange(0,i):
+				#print "j", j
+				#if f[i:j] in tm:
+				if f[j:i] in tm:
+					for phrase in tm[f[j:i]]:
+						# select a point to insert
+						for k in range(len(h.translated)+1): # n+1 insertion points in n nodes.
+							toTranslate = h.translated[:k] + [phrase.english.split()] + h.translated[k:] 
+							# tranlation log-probability 
+							logprob = h.translated_logprob + phrase.logprob
+							translated_logprob = logprob
+							# language log-probability
+							lm_state = lm.begin()
+							temp = [x for y in toTranslate for x in y]
+							for word in temp: #toTranslate:
+								(lm_state, word_logprob) = lm.score(lm_state, word)
+								logprob += word_logprob
+
+							logprob += lm.end(lm_state) #if j == len(f) else 0.0	
+
+							# distance score 
+							logprob += distance(k,0) 
+	
+							new_hypothesis = hypothesis(logprob, translated_logprob, lm_state, h, phrase, toTranslate)							
+							sent = " ".join([x for y in toTranslate for x in y])
+							if sent not in stacks_back[j] or stacks_back[j][sent].logprob < logprob:
+								stacks_back[j][sent] = new_hypothesis 
+
+
+	#######################################################################################
+
+	# forward 
+	stacks = [{} for _ in f] + [{}]
+	#stacks[0][lm.begin()] = initial_hypothesis
+	stacks[0][""] = initial_hypothesis
+	for i, stack in enumerate(stacks[:-1]):
+		# extend the top s hypotheses in the current stack
+		for h in heapq.nlargest(opts.s, stack.itervalues(), key=lambda h: h.logprob): # prune
+			for j in xrange(i+1,len(f)+1):
+				#print "j:", j
+				if f[i:j] in tm:
+					for phrase in tm[f[i:j]]:
+						# select a point to insert
+						for k in range(len(h.translated)+1): # n+1 insertion points in n nodes.
+							toTranslate = h.translated[:k] + [phrase.english.split()] + h.translated[k:] 
+							# tranlation log-probability 
+							logprob = h.translated_logprob + phrase.logprob
+							translated_logprob = logprob
+							# language log-probability
+							lm_state = lm.begin()
+							temp = [x for y in toTranslate for x in y]
+							for word in temp: #toTranslate:
+								(lm_state, word_logprob) = lm.score(lm_state, word)
+								logprob += word_logprob
+
+							logprob += lm.end(lm_state) #if j == len(f) else 0.0	
+
+							# distance score 
+							logprob += distance(k,len(h.translated)+1) 
+	
+							new_hypothesis = hypothesis(logprob, translated_logprob, lm_state, h, phrase, toTranslate)							
+							sent = " ".join([x for y in toTranslate for x in y])
+							if sent not in stacks[j] or stacks[j][sent].logprob < logprob:
+								stacks[j][sent] = new_hypothesis 
+
+	# make backward as history
+	# TODO  
+
+
+	# find best translation by looking at the best scoring hypothesis
+	# on the last stack
+	winner_backward = max(stacks_back[0].itervalues(), key=lambda h: h.logprob)
+	winner_forward = max(stacks[-1].itervalues(), key=lambda h: h.logprob)
+	def extract_english_recursive(h):
+		return " ".join([x for y in h.translated for x in y])
+
+	#print "for:", winner_backward.logprob, " back:", winner_forward.logprob
+	
+	winner = max([winner_forward,winner_backward], key=attrgetter('logprob'))
+	#winner = max([winner_forward,winner_backward].itervalues(), key=lambda h: h.logprob)
+
+	#print extract_english_recursive(winner)
+
+	winner = reorder(winner)
+	print extract_english_recursive(winner)
+
+	# reordering
+
+
+
+
+	if opts.verbose:
+		def extract_tm_logprob(h):
+			return 0.0 if h.predecessor is None else h.phrase.logprob + extract_tm_logprob(h.predecessor)
+		tm_logprob = extract_tm_logprob(winner)
+		sys.stderr.write('LM = %f, TM = %f, Total = %f\n' %(winner.logprob - tm_logprob, tm_logprob, winner.logprob))

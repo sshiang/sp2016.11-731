@@ -201,11 +201,11 @@
 <s> well , all right . would you like to have a room for a <unk> on the <unk> , <unk> ? and do n't have any <unk> , please . </s>
 <s> could you take a picture , please ? </s>
 <s> i do n't have to <unk> <unk> . how many <unk> of <unk> , i 'd like to have a <unk> <unk> . </s>
-<s> what 's the most popular play now now ? </s>
+<s> what kind of musical do i take playing ? </s>
 <s> no , it 's better . </s>
 <s> please give me some . </s>
 <s> we 've just a <unk> . </s>
-<s> certainly , then . this is the first way to get here . </s>
+<s> certainly . please fill out this form . </s>
 <s> i 'm sorry . </s>
 <s> how many you are in the <unk> now ? </s>
 <s> i need a <unk> . </s>
@@ -221,7 +221,7 @@
 <s> some more beer , please . </s>
 <s> is this <unk> <unk> in <unk> ? </s>
 <s> what are you now ? </s>
-<s> it 's just around eight dollars . </s>
+<s> it has been fifty years . </s>
 <s> please draw a map map . </s>
 <s> please show me the front of the <unk> . </s>
 <s> next next next next to . </s>
@@ -230,7 +230,7 @@
 <s> how long will you stay in hawaii ? </s>
 <s> good . </s>
 <s> how about the next week ? </s>
-<s> it takes about about minutes minutes . </s>
+<s> it takes about fifteen minutes . </s>
 <s> i 'd like to have the <unk> at the <unk> of the <unk> . </s>
 <s> it 's on the line </s>
 <s> call me a doctor , please . </s>
@@ -250,7 +250,7 @@
 <s> hello . this is the japanese color ? </s>
 <s> how are you going to have ? </s>
 <s> sure . </s>
-<s> yes , you 're in a good trip with your room . </s>
+<s> yes , ma 'am please . </s>
 <s> no . i 'll be in the party you do you ? </s>
 <s> i 'd like fish . </s>
 <s> i prefer a <unk> <unk> with a <unk> of a <unk> . </s>
@@ -297,7 +297,7 @@
 <s> do you have a <unk> for this medicine ? </s>
 <s> i feel <unk> . </s>
 <s> you 're on the right . </s>
-<s> do n't mind you do n't mind where for the <unk> ? </s>
+<s> can you tell me the way to the <unk> ? </s>
 <s> how many days is it for you ? </s>
 <s> is this one ? </s>
 <s> can i have another cup ? </s>
@@ -426,10 +426,10 @@
 <s> please pay the window . </s>
 <s> the most view is not good . </s>
 <s> sure . </s>
-<s> the movie is popular this year . </s>
+<s> this is very popular this year . </s>
 <s> take me to the hospital , please . </s>
 <s> no , i 'm not now . </s>
-<s> this is mr. tanaka . </s>
+<s> this is mr. yamada . </s>
 <s> i 'd like a <unk> of the sleeves . </s>
 <s> which way should i take to go to the central station ? </s>
 <s> i need a <unk> <unk> . </s>

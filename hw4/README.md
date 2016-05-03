@@ -18,6 +18,7 @@ What I've tried:
 	2. global attention: 
 		a. context vector is the weighted sum of source LSTM language model
 		b. weight score: inner product of source LSTM and target LSTM
+	3. one hot or posterior as input features of decoder, I get better results using one hot. 
 
 What's interesting: 
 	I forgot to update the weights in target LSTM in the beginning, but I still got 21.52 in the leader board! How amazing deep learing it is XD

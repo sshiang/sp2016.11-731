@@ -3,8 +3,11 @@ package:
 	2. lasagne:'0.2.dev1'
 
 How to implement:
-	./seq2seq_attn.py
-	the output is in "translation_attn.txt"
+	1. python preprocess_hw4.py de
+	   python preprocess_hw4.py en
+	2. pythn seq2seq_attn.py
+		the output is in "translation_test.txt"
+
 
 What I've tried:
 	1. sequence to sequence prediction
@@ -12,7 +15,7 @@ What I've tried:
 		b. only 1 stack LSTM. 
 	2. global attention: 
 		a. context vector is the weighted sum of source LSTM language model
-		b. weight score: inner dot of source LSTM and target LSTM
+		b. weight score: inner product of source LSTM and target LSTM
 
 What's interesting: 
 	I forgot to update the weights in target LSTM in the beginning, but I still got 21.52 in the leader board! How amazing deep learing it is XD

@@ -5,7 +5,9 @@ package:
 How to implement:
 	1. python preprocess_hw4.py de
 	   python preprocess_hw4.py en
-	2. pythn seq2seq_attn.py
+	2. python analysis.py src
+	   python analysis.py tgt
+	3. pythn seq2seq_attn.py
 		the output is in "translation_test.txt"
 
 

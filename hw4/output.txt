@@ -82,9 +82,9 @@
 <s> when should i get to get the time of the plane ? </s>
 <s> what time is the movie in the theater ? </s>
 <s> please my room number . </s>
-<s> do you mind if i go to the restroom ? </s>
+<s> do you mind if i join you ? </s>
 <s> a large and a <unk> . </s>
-<s> i 'd like to get a table for the way to boston . </s>
+<s> please make me to the reservation for my flight . </s>
 <s> why is it there ? i 'm afraid i 'm late . </s>
 <s> will it take a long ? </s>
 <s> how much is the excess charge charge ? </s>
@@ -99,7 +99,7 @@
 <s> yes . </s>
 <s> what would you like to drink ? </s>
 <s> he looks he . </s>
-<s> where can i get a new york on the bus ? </s>
+<s> which bus can we take our city ? </s>
 <s> i do n't like this style . </s>
 <s> do you have <unk> <unk> ? </s>
 <s> how many is this <unk> in this town ? </s>
